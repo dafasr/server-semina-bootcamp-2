@@ -4,8 +4,10 @@ const router = express();
 // import product controller
 const { create } = require('./controller');
 
+const upload = require('../../../middlewares/multer');
+
 // pasangkan route endpoint dengan method `create`
-router.post('/categories', create);
+router.post('/categories', upload.single('avatar'), create);
 
 // export router
 module.exports = router;
