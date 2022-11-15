@@ -5,6 +5,7 @@ const logger = require('morgan');
 const app = express();
 // import router categories
 const categoriesRouter = require('./app/api/v1/categories/router');
+const imagesRouter = require('./app/api/v1/images/router');
 // membuat variabel v1
 const v1 = '/api/v1/cms';
 // middlewares
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 
 // gunakan categories router
 app.use(v1, categoriesRouter);
+app.use(v1, imagesRouter);
 
 //middlewares
 app.use(notFoundMiddleware);
