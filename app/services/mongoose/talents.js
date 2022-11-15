@@ -33,8 +33,8 @@ const createTalents = async (req) => {
   // cari talents dengan field name
   const check = await Talents.findOne({ name });
 
-  // apa bila check true / data talents sudah ada maka kita tampilkan error bad request dengan message pembicara duplikat
-  if (check) throw new BadRequestError('pembicara nama duplikat');
+  // apa bila check true / data talents sudah ada maka kita tampilkan error bad request dengan message Pembicara telah terdaftar
+  if (check) throw new BadRequestError('Pembicara telah terdaftar');
 
   const result = await Talents.create({ name, image, role });
 
@@ -70,8 +70,8 @@ const updateTalents = async (req) => {
     _id: { $ne: id },
   });
 
-  // apa bila check true / data talents sudah ada maka kita tampilkan error bad request dengan message pembicara nama duplikat
-  if (check) throw new BadRequestError('pembicara nama duplikat');
+  // apa bila check true / data talents sudah ada maka kita tampilkan error bad request dengan message Pembicara telah terdaftar
+  if (check) throw new BadRequestError('Pembicara telah terdaftar');
 
   const result = await Talents.findOneAndUpdate(
     { _id: id },
