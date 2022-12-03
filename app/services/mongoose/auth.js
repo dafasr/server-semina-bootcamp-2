@@ -15,7 +15,7 @@ const signin = async (req) => {
   }
 
   const isPasswordCorrect = await result.comparePassword(password);
-  if (isPasswordCorrect) {
+  if (!isPasswordCorrect) {
     throw new UnauthorizedError('Invalid Credentials');
   }
   const token = createJWT({ payload: createTokenUser(result) });

@@ -23,5 +23,27 @@ const createOrganizer = async (req) => {
 
   return users;
 };
+const createUsers = async (req) => {
+  const { role, email, password, confirmPassword, name } = req.body;
 
-module.exports = { createOrganizer };
+  if (password !== confirmPassword) {
+    throw new BadRequestError('Password dan Confirm Password tidak cocok');
+  }
+
+  const users = await Users.create({
+    email,
+    name,
+    password,
+    organizer: req.user.organizer,
+    role,
+  });
+
+  return users;
+};
+const getAllUsers = async (req) => {
+  const result = await Users.find();
+
+  return result;
+};
+
+module.exports = { createOrganizer, createUsers, getAllUsers };
