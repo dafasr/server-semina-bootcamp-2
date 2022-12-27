@@ -8,7 +8,7 @@ const { checkingTalents } = require('./talents');
 const { NotFoundError, BadRequestError } = require('../../errors');
 
 const getAllEvents = async (req) => {
-  const { keyword, category, talent } = req.query;
+  const { keyword, category, talent, status } = req.query;
   let condition = { organizer: req.user.organizer };
 
   if (keyword) {
@@ -21,6 +21,13 @@ const getAllEvents = async (req) => {
 
   if (talent) {
     condition = { ...condition, talent: talent };
+  }
+
+  if (['Draft', 'Published'].includes(status)) {
+    condition = {
+      ...condition,
+      statusEvent: status,
+    };
   }
 
   const result = await Events.find(condition)
@@ -61,8 +68,8 @@ const createEvents = async (req) => {
   // cari Events dengan field name
   const check = await Events.findOne({ title });
 
-  // apa bila check true / data Events sudah ada maka kita tampilkan error bad request dengan message pembicara duplikat
-  if (check) throw new BadRequestError('judul event duplikat');
+  // apa bila check true / data Events sudah ada maka kita tampilkan error bad request dengan message judul acara sudah terdaftar
+  if (check) throw new BadRequestError('judul acara sudah terdaftar');
 
   const result = await Events.create({
     title,
@@ -100,8 +107,7 @@ const getOneEvents = async (req) => {
       populate: { path: 'image', select: '_id  name' },
     });
 
-  if (!result)
-    throw new NotFoundError(`Tidak ada pembicara dengan id :  ${id}`);
+  if (!result) throw new NotFoundError(`Tidak ada acara dengan id :  ${id}`);
 
   return result;
 };
@@ -127,10 +133,12 @@ const updateEvents = async (req) => {
   await checkingCategories(category);
   await checkingTalents(talent);
 
-  //cari event bersdasarkan field id
-  const checkEvent = await Events.findOne({ _id: id });
+  // cari event berdasarkan field id
+  const checkEvent = await Events.findOne({
+    _id: id,
+  });
 
-  // jika id result false / null maka akan menampilkan error `Tidak ada pembicara dengan id` yang dikirim client
+  // jika id result false / null maka akan menampilkan error `Tidak ada acara dengan id` yang dikirim client
   if (!checkEvent)
     throw new NotFoundError(`Tidak ada acara dengan id :  ${id}`);
 
@@ -142,7 +150,7 @@ const updateEvents = async (req) => {
   });
 
   // apa bila check true / data Events sudah ada maka kita tampilkan error bad request dengan message pembicara duplikat
-  if (check) throw new BadRequestError('judul event duplikat');
+  if (check) throw new BadRequestError('judul acara sudah terdaftar');
 
   const result = await Events.findOneAndUpdate(
     { _id: id },
@@ -174,8 +182,7 @@ const deleteEvents = async (req) => {
     organizer: req.user.organizer,
   });
 
-  if (!result)
-    throw new NotFoundError(`Tidak ada pembicara dengan id :  ${id}`);
+  if (!result) throw new NotFoundError(`Tidak ada acara dengan id :  ${id}`);
 
   await result.remove();
 
