@@ -8,9 +8,9 @@ const createJWT = ({ payload }) => {
   return token;
 };
 
-const isTokenvalid = ({ token }) => jwt.verify(token, jwtSecret);
+const isTokenValid = ({ token }) => jwt.verify(token, jwtSecret);
 
 module.exports = {
   createJWT,
-  isTokenvalid,
+  isTokenValid,
 };
