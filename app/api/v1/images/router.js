@@ -8,6 +8,7 @@ const upload = require('../../../middlewares/multer');
 
 // pasangkan route endpoint dengan method `create`
 router.post('/images', upload.single('avatar'), create);
+router.post('/images', upload.single('avatar'), create);
 
 // export router
 module.exports = router;
